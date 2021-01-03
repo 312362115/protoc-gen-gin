@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+package demo.service.v1;
+option go_package = "demo";
+
+service Demo {
+  rpc Hello(HelloReq) returns (HelloResp) {
+    option (google.api.http) = {
+      get: "/rpc/hello"
+    };
+  }
+  rpc Demo(DemoReq) returns (DemoResp) {
+    option (google.api.http) = {
+      post: "/rpc/demo"
+      body: "*"
+    };
+  }
+}
+
+message HelloReq {
+  string name = 1 [(gogoproto.moretags) = 'form:"name" validate:"required"'];
+}
+
+message HelloResp {
+  string content = 1;
+}
+
+message DemoReq {
+  string name = 1 [(gogoproto.moretags) = 'validate:"required"'];
+}
+
+message DemoResp {
+  string content = 1;
+}
