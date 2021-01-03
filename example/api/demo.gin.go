@@ -9,7 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	"github.com/go-kratos/kratos/pkg/ecode"
+	"github.com/312362115/protoc-gen-gin/ecode"
 )
 
 // to suppressed 'imported but not used warning'
@@ -28,14 +28,14 @@ type DemoGinServer interface {
 }
 
 func JSON(c *gin.Context, data interface{}, err error) {
-	code := http.StatusOK
+	httpCode := http.StatusOK
 	bcode := ecode.Cause(err)
-	if bcode.Code() == -500 {
-		code = http.StatusServiceUnavailable
+	if bcode.Code < 0 {
+		httpCode = -bcode.Code
 	}
-	c.JSON(code, Response{
-		Code:    code,
-		Message: bcode.Message(),
+	c.JSON(httpCode, Response{
+		Code:    bcode.Code,
+		Message: bcode.Message,
 		Data:    data,
 	})
 }

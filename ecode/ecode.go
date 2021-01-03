@@ -26,6 +26,13 @@ func Error(err error) *Code {
 	}
 }
 
+func OK() *Code {
+	return &Code{
+		Code:    OkCode,
+		Message: "ok",
+	}
+}
+
 func (e *Code) Error() string {
 	if e.Code == OkCode {
 		return "ok"
@@ -42,7 +49,7 @@ func (e *Code) String() string {
 
 func Cause(e error) *Code {
 	if e == nil {
-		return nil
+		return OK()
 	}
 	ec, ok := errors.Cause(e).(*Code)
 	if ok {

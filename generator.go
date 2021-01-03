@@ -94,7 +94,7 @@ func (t *gin) generateImports(file *descriptor.FileDescriptorProto) {
 	t.P()
 	t.P(`	"github.com/gin-gonic/gin"`)
 	t.P(`	"github.com/gin-gonic/gin/binding"`)
-	t.P(`	"github.com/go-kratos/kratos/pkg/ecode"`)
+	t.P(`	"github.com/312362115/protoc-gen-gin/ecode"`)
 	t.P(`)`)
 	// It's legal to import a message and use it as an input or output for a
 	// method. Make sure to import the package of any such message. First, dedupe
@@ -124,14 +124,14 @@ func (t *gin) generateGinRoute(
 	service *descriptor.ServiceDescriptorProto) {
 	t.P()
 	t.P(`func JSON(c *gin.Context, data interface{}, err error) {
-		code := http.StatusOK
+		httpCode := http.StatusOK
 		bcode := ecode.Cause(err)
-		if bcode.Code() == -500 {
-			code = http.StatusServiceUnavailable
+		if bcode.Code < 0 {
+			httpCode = -bcode.Code
 		}
-		c.JSON(code, Response{
-			Code:    code,
-			Message: bcode.Message(),
+		c.JSON(httpCode, Response{
+			Code:    bcode.Code,
+			Message: bcode.Message,
 			Data:    data,
 		})
 	}`)
